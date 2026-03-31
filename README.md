@@ -2,7 +2,7 @@
 
 It's the Magic Triangle in pure Rust
 
-[![Pyronyx](https://img.shields.io/badge/github-repo-blue?logo=github)](https://github.com/unschlagbar/pyronyx)
+[![Pyronyx](https://img.shields.io/badge/pyronyx-repo-darkred?logo=github)](https://github.com/unschlagbar/pyronyx)
 [![LICENSE](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE-MIT)
 
 ## Overview 
