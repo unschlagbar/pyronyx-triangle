@@ -2,7 +2,7 @@
 
 It's the Magic Triangle in pure Rust
 
-[![Pyronyx]()](https://github.com/unschlagbar/pyronyx)
+[![Pyronyx](https://img.shields.io/badge/github-repo-blue?logo=github)](https://github.com/unschlagbar/pyronyx)
 [![LICENSE](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE-MIT)
 
 ## Overview 
@@ -18,6 +18,8 @@ Here is also a different tutorial using Rust and [Ash](https://github.com/ash-rs
 - Why is the `cargo run --release` binary so big?
 
 Because winit is just so unoptimized, I might make my own windowing lib.
+
+##
 
 ![Hello Triangle](image.png)
 
