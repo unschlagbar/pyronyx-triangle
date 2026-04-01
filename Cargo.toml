@@ -6,4 +6,4 @@ rust-version = "1.85.0"
 
 [dependencies]
 winit = { version = "0.30.13", features = ["rwh_06"] }
-pyronyx = { path = "../pyronyx", features = ["rwh_06"] }
+pyronyx = { version = "0.1.0+1.4.341", features = ["rwh_06"] }
