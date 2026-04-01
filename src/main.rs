@@ -1,6 +1,6 @@
 #[cfg(debug_assertions)]
 use std::ffi::c_void;
-use std::{collections::HashSet, ffi::CStr, slice, thread::sleep, time::Duration};
+use std::{collections::HashSet, ffi::CStr, slice};
 
 #[cfg(debug_assertions)]
 use pyronyx::ext::{self, debug_utils::DebugUtilsInstance};
@@ -105,37 +105,6 @@ struct HelloTriangleApp {
 }
 
 impl ApplicationHandler for HelloTriangleApp {
-    fn window_event(
-        &mut self,
-        event_loop: &ActiveEventLoop,
-        _id: WindowId,
-        event: winit::event::WindowEvent,
-    ) {
-        let renderer = if let Some(renderer) = &mut self.renderer {
-            renderer
-        } else {
-            return;
-        };
-
-        match event {
-            WindowEvent::RedrawRequested => {
-                renderer.draw_frame();
-            }
-            WindowEvent::Resized(_) => {
-                renderer.recreate_swapchain(self.window.as_ref().unwrap());
-            }
-            WindowEvent::CloseRequested => event_loop.exit(),
-            WindowEvent::Destroyed => event_loop.exit(),
-            _ => (),
-        }
-    }
-
-    fn about_to_wait(&mut self, _event_loop: &ActiveEventLoop) {
-        if let Some(window) = &self.window {
-            window.request_redraw();
-        }
-    }
-
     fn resumed(&mut self, event_loop: &ActiveEventLoop) {
         if self.window.is_none() {
             let window_attributes = Window::default_attributes()
@@ -150,13 +119,49 @@ impl ApplicationHandler for HelloTriangleApp {
 
         if self.renderer.is_none() {
             let mut renderer = Renderer::init(self.window.as_ref().unwrap());
-            renderer.draw_frame();
+            renderer.draw_frame(self.window.as_ref().unwrap());
 
             self.renderer = Some(renderer);
         }
     }
 
-    fn exiting(&mut self, _event_loop: &ActiveEventLoop) {
+    fn about_to_wait(&mut self, _: &ActiveEventLoop) {
+        if let Some(window) = &self.window {
+            window.request_redraw();
+        }
+    }
+
+    fn window_event(
+        &mut self,
+        event_loop: &ActiveEventLoop,
+        _: WindowId,
+        event: winit::event::WindowEvent,
+    ) {
+        let renderer = if let Some(renderer) = &mut self.renderer {
+            renderer
+        } else {
+            return;
+        };
+
+        match event {
+            WindowEvent::RedrawRequested => {
+                if let Some(window) = &self.window
+                    && window.inner_size().height != 0
+                {
+                    renderer.draw_frame(window);
+                }
+            }
+            WindowEvent::Resized(_) => {
+                let window = self.window.as_ref().unwrap();
+                renderer.recreate_swapchain(window);
+            }
+            WindowEvent::CloseRequested => event_loop.exit(),
+            WindowEvent::Destroyed => event_loop.exit(),
+            _ => (),
+        }
+    }
+
+    fn exiting(&mut self, _: &ActiveEventLoop) {
         if let Some(renderer) = &mut self.renderer {
             renderer.cleanup();
         }
@@ -584,8 +589,9 @@ impl Renderer {
         });
     }
 
-    fn draw_frame(&mut self) {
+    fn draw_frame(&mut self, window: &Window) {
         let current = self.current_frame;
+
         self.device
             .wait_for_fences(&[self.in_flight_fence[current]], true, u64::MAX)
             .unwrap();
@@ -600,6 +606,7 @@ impl Renderer {
         let image_index = match result {
             Ok(index) => index,
             Err(vk::Error::OutOfDateKHR | vk::Error::SuboptimalKHR) => {
+                self.recreate_swapchain(window);
                 return;
             }
             _ => panic!("failed to acquire swap chain image!"),
@@ -710,7 +717,6 @@ impl Renderer {
         let size = window.inner_size();
 
         if size.height == 0 || size.width == 0 {
-            sleep(Duration::from_millis(50));
             return;
         }
 
