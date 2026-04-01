@@ -813,7 +813,7 @@ fn create_instance(window: &Window) -> vk::Instance {
     #[cfg(debug_assertions)]
     let create_info = create_info.next(&mut debug_create_info);
 
-    vk::Instance::create(&create_info, None).expect("failed to create instance!")
+    unsafe { vk::Instance::create(&create_info, None).expect("failed to create instance!") }
 }
 
 #[cfg(debug_assertions)]
@@ -903,9 +903,11 @@ fn create_logical_device(
         ..Default::default()
     };
 
-    let logical_device = device
-        .create_device(&create_info, None, instance)
-        .expect("failed to create logical device!");
+    let logical_device = unsafe {
+        device
+            .create_device(&create_info, None, instance)
+            .expect("failed to create logical device!")
+    };
 
     let graphics_queue = unsafe { logical_device.get_device_queue(graphics_family, 0) };
     let present_queue = unsafe { logical_device.get_device_queue(present_family, 0) };
