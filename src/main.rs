@@ -720,7 +720,7 @@ impl Renderer {
             return;
         }
 
-        self.device.device_wait_idle().unwrap();
+        self.device.wait_idle().unwrap();
 
         let swapchain = self.create_swapchain(window);
         self.cleanup_swapchain();
@@ -742,7 +742,7 @@ impl Renderer {
     }
 
     fn cleanup(&mut self) {
-        self.device.device_wait_idle().unwrap();
+        self.device.wait_idle().unwrap();
 
         self.cleanup_swapchain();
 
@@ -763,7 +763,7 @@ impl Renderer {
         }
 
         self.device.destroy_command_pool(self.command_pool, None);
-        self.device.destroy_device(None);
+        self.device.destroy(None);
 
         #[cfg(debug_assertions)]
         self.instance
