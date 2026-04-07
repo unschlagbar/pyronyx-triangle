@@ -314,7 +314,7 @@ impl Renderer {
 
     fn create_image_views(&mut self) {
         let mut create_info = vk::ImageViewCreateInfo {
-            view_type: vk::ImageViewType::Type2d,
+            view_type: vk::ImageViewType::Type2D,
             format: self.swapchain_format,
             components: vk::ComponentMapping {
                 r: vk::ComponentSwizzle::Identity,
