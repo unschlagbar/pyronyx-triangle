@@ -775,14 +775,6 @@ impl Renderer {
 }
 
 fn create_instance(window: &Window) -> vk::Instance {
-    #[cfg(debug_assertions)]
-    let validation = if check_validation_layer_support() {
-        true
-    } else {
-        println!("validation layers requested, but not available!");
-        false
-    };
-
     let app_info = vk::ApplicationInfo {
         application_name: c"Hello Triangle".as_ptr(),
         application_version: vk::make_api_version(0, 1, 0, 0),
@@ -802,11 +794,16 @@ fn create_instance(window: &Window) -> vk::Instance {
         ext::debug_utils::NAME.as_ptr(),
     ];
 
-    let layers: &[&CStr] = if cfg!(debug_assertions) && validation {
+    #[cfg(debug_assertions)]
+    let layers: &[&CStr] = if check_validation_layer_support() {
         VALIDATION_LAYERS
     } else {
+        println!("validation layers requested, but not available!");
         &[]
     };
+
+    #[cfg(not(debug_assertions))]
+    let layers: &[&CStr] = &[];
 
     let create_info = vk::InstanceCreateInfo {
         application_info: &app_info,
@@ -897,11 +894,15 @@ fn create_logical_device(
         ]
     };
 
-    let layers: &[&CStr] = if cfg!(debug_assertions) && check_validation_layer_support() {
+    #[cfg(debug_assertions)]
+    let layers: &[&CStr] = if check_validation_layer_support() {
         VALIDATION_LAYERS
     } else {
         &[]
     };
+
+    #[cfg(not(debug_assertions))]
+    let layers: &[&CStr] = &[];
 
     let create_info = vk::DeviceCreateInfo {
         queue_create_info_count: queue_create_infos.len() as u32,
