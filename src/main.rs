@@ -894,21 +894,9 @@ fn create_logical_device(
         ]
     };
 
-    #[cfg(debug_assertions)]
-    let layers: &[&CStr] = if check_validation_layer_support() {
-        VALIDATION_LAYERS
-    } else {
-        &[]
-    };
-
-    #[cfg(not(debug_assertions))]
-    let layers: &[&CStr] = &[];
-
     let create_info = vk::DeviceCreateInfo {
         queue_create_info_count: queue_create_infos.len() as u32,
         queue_create_infos: queue_create_infos.as_ptr(),
-        enabled_layer_count: layers.len() as u32,
-        enabled_layer_names: layers.as_ptr().cast(),
         enabled_extension_count: DEVICE_EXTENSIONS.len() as u32,
         enabled_extension_names: DEVICE_EXTENSIONS.as_ptr().cast(),
         enabled_features: &vk::PhysicalDeviceFeatures::default(),
