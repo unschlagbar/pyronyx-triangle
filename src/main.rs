@@ -604,7 +604,7 @@ impl Renderer {
         );
 
         let image_index = match result {
-            Ok(index) => index,
+            Ok(index) => index.value,
             Err(vk::Error::OutOfDateKHR | vk::Error::SuboptimalKHR) => {
                 self.recreate_swapchain(window);
                 return;
