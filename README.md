@@ -13,12 +13,6 @@ After replicating all the code you should be good to go with the rest of the oth
 
 Here is also a different tutorial using Rust and [Ash](https://github.com/ash-rs/ash) [vulkan-tutorial-rust](https://github.com/unknownue/vulkan-tutorial-rust)
 
-## Questions
-
-- Why is the `cargo run --release` binary so big?
-
-Because winit is just so unoptimized, I might make my own windowing lib.
-
 ##
 
 ![Hello Triangle](image.png)
