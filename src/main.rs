@@ -92,6 +92,9 @@ impl SwapchainSupportDetails {
 }
 
 fn main() {
+    // With the "loaded" feature (dynamic loading), load the Vulkan loader first:
+    // pyronyx::load().expect("failed to load the Vulkan loader");
+
     let mut app = HelloTriangleApp::default();
 
     let event_loop = EventLoop::builder().build().unwrap();
